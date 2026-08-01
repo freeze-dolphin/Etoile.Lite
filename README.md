@@ -1,2 +1,3 @@
 # Etoile.Lite
-cli tool for converting Arcaea charts | `pack` feature inclusive | full-rewrite in C#
+
+A lightweight utility that converts Arcaea chart files into [ArcCreate](https://github.com/Arcthesia/ArcCreate)-compatible packages
