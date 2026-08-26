@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Moonad" Version="5.5.1" />
+      <PackageReference Include="Moonad.Next" Version="1.0.0" />
+      <PackageReference Include="Spectre.Console" Version="0.57.2" />
+      <PackageReference Include="Spectre.Console.Cli" Version="0.55.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="../Etoile.Lite.Parser/Etoile.Lite.Parser.csproj" />
+    </ItemGroup>
+
+</Project>

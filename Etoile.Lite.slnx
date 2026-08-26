@@ -1,0 +1,10 @@
+<Solution>
+    <Project Path="Etoile.Lite.Parser/Etoile.Lite.Parser.csproj" />
+    <Project Path="Etoile.Lite/Etoile.Lite.csproj" />
+    <Folder Name="/Solution Items/">
+        <File Path="README.md" />
+        <File Path="Makefile" />
+        <File Path="scripts" />
+        <File Path="scripts/LocaleLookup.fsx" />
+    </Folder>
+</Solution>
