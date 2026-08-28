@@ -119,7 +119,7 @@ public class ArcCreateChartSerializer(
                     $"{indent}arc({arc.Timing},{arc.EndTiming},{arc.XStart:f2},{arc.XEnd:f2}," +
                     $"{arc.LineType},{arc.YStart:f2},{arc.YEnd:f2},"                           +
                     $"{arc.Color},{arc.Sfx ?? "none"},{(arc.IsTrace ? "true" : "false")}";
-                if (!arc.ArcResolutionMultiplier.Approximately(1.0f))
+                if (arc.ArcResolutionMultiplier.Approximately(1.0f))
                 {
                     arcStr += ")";
                 }
