@@ -1,25 +1,30 @@
 ﻿using System.Text;
+using Etoile.Lite.Parser.Scenecontrol;
 using Etoile.Lite.Parser.Types;
 using Etoile.Lite.Parser.Utility;
+using Moonad;
 
 namespace Etoile.Lite.Parser;
 
 public class ArcCreateChartSerializer(
-    int                                                                    audioOffset,
-    double                                                                 density,
-    IEnumerable<(RawTimingGroup properties, IEnumerable<RawEvent> events)> groups
+    int                         audioOffset,
+    double                      density,
+    IEnumerable<RawEvent>       events,
+    IEnumerable<RawTimingGroup> timingGroups
 )
 {
-    private readonly StringBuilder _chart        = new();
-    private readonly StringBuilder _scenecontrol = new();
-    
-    public string ChartResult => _chart.ToString();
-    public string ScenecontrolSerializationResult => _scenecontrol.ToString();
+    private readonly StringBuilder chart        = new();
+    private readonly StringBuilder scenecontrol = new();
 
-    public void Serialize()
+    public string ChartResult                     => chart.ToString();
+    public string ScenecontrolSerializationResult => scenecontrol.ToString();
+
+    public Result<(Exception, RawScenecontrol?)> Serialize()
     {
+        IEnumerable<(RawTimingGroup, IEnumerable<RawEvent>)> groups = timingGroups.Select((rawTg, tg) => (rawTg, events.Where(e => e.TimingGroup == tg)));
+
         bool baseGroup = true;
-        foreach (var (properties, events) in groups)
+        foreach (var (properties, evts) in groups)
         {
             if (!baseGroup)
             {
@@ -30,7 +35,7 @@ public class ArcCreateChartSerializer(
                 SerializeChartSettings();
             }
 
-            foreach (var e in events)
+            foreach (var e in evts)
             {
                 SerializeEvent(e, !baseGroup);
             }
@@ -42,22 +47,33 @@ public class ArcCreateChartSerializer(
 
             baseGroup = false;
         }
+
+        var sc = new ScenecontrolService();
+        var env = new ScenecontrolEnvironment(sc);
+        var scBuildResult = env.Rebuild(events.OfType<RawScenecontrol>());
+        if (scBuildResult.IsOk)
+        {
+            sc.Export()?.Next(scenecontrol.AppendLfLine);
+            return Result<(Exception, RawScenecontrol?)>.Ok();
+        }
+
+        return scBuildResult;
     }
 
     private void SerializeTimingGroupStart(RawTimingGroup properties)
     {
-        _chart.AppendLfLine($"timinggroup({properties.ToString()}){{");
+        chart.AppendLfLine($"timinggroup({properties.ToString()}){{");
     }
 
     private void SerializeChartSettings()
     {
-        _chart.AppendLfLine($"AudioOffset:{audioOffset}");
+        chart.AppendLfLine($"AudioOffset:{audioOffset}");
         if (!density.Approximately(1))
         {
-            _chart.AppendLfLine($"TimingPointDensityFactor:{density:f1}");
+            chart.AppendLfLine($"TimingPointDensityFactor:{density:f1}");
         }
 
-        _chart.AppendLfLine("-");
+        chart.AppendLfLine("-");
     }
 
     private static bool HasDecimal(double value, float epsilon = 0.001f)
@@ -72,29 +88,29 @@ public class ArcCreateChartSerializer(
         {
             case RawEventType.Timing:
                 RawTiming timing = affEvent as RawTiming;
-                _chart.AppendLfLine($"{indent}timing({timing.Timing},{timing.Bpm:f2},{timing.Divisor:f2});");
+                chart.AppendLfLine($"{indent}timing({timing.Timing},{timing.Bpm:f2},{timing.Divisor:f2});");
                 break;
 
             case RawEventType.Tap:
                 RawTap tap = affEvent as RawTap;
                 if (HasDecimal(tap.Lane))
                 {
-                    _chart.AppendLfLine($"{indent}({tap.Timing},{tap.Lane:f3});");
+                    chart.AppendLfLine($"{indent}({tap.Timing},{tap.Lane:f3});");
                     break;
                 }
 
-                _chart.AppendLfLine($"{indent}({tap.Timing},{tap.Lane:N0});");
+                chart.AppendLfLine($"{indent}({tap.Timing},{tap.Lane:N0});");
                 break;
 
             case RawEventType.Hold:
                 RawHold hold = affEvent as RawHold;
                 if (HasDecimal(hold.Lane))
                 {
-                    _chart.AppendLfLine($"{indent}hold({hold.Timing},{hold.EndTiming},{hold.Lane:f3});");
+                    chart.AppendLfLine($"{indent}hold({hold.Timing},{hold.EndTiming},{hold.Lane:f3});");
                     break;
                 }
 
-                _chart.AppendLfLine($"{indent}hold({hold.Timing},{hold.EndTiming},{hold.Lane:N0});");
+                chart.AppendLfLine($"{indent}hold({hold.Timing},{hold.EndTiming},{hold.Lane:N0});");
                 break;
 
             case RawEventType.Arc:
@@ -136,7 +152,7 @@ public class ArcCreateChartSerializer(
                 }
 
                 arcStr += ";";
-                _chart.AppendLfLine(arcStr);
+                chart.AppendLfLine(arcStr);
                 break;
 
             case RawEventType.Camera:
@@ -145,7 +161,7 @@ public class ArcCreateChartSerializer(
                     $"{indent}camera({cam.Timing},{cam.Move.X:f2},{cam.Move.Y:f2},{cam.Move.Z:f2}," +
                     $"{cam.Rotate.X:f2},{cam.Rotate.Y:f2},{cam.Rotate.Z:f2},"                       +
                     $"{cam.CameraType},{cam.Duration});";
-                _chart.AppendLfLine(camStr);
+                chart.AppendLfLine(camStr);
                 break;
 
             case RawEventType.Scenecontrol:
@@ -153,17 +169,17 @@ public class ArcCreateChartSerializer(
 
                 if (scc.Arguments.Count == 0)
                 {
-                    _chart.AppendLfLine($"{indent}scenecontrol({scc.Timing},{scc.ScenecontrolTypeName});");
+                    chart.AppendLfLine($"{indent}scenecontrol({scc.Timing},{scc.ScenecontrolTypeName});");
                 }
                 else
                 {
                     string parameterString = ",";
-                    
+
                     parameterString += scc.Arguments[0].ToString("0.00") + ",";
-                    parameterString += scc.Arguments[1].ToString("0") + ",";
+                    parameterString += scc.Arguments[1].ToString("0")    + ",";
 
                     parameterString = parameterString.Remove(parameterString.Length - 1);
-                    _chart.AppendLfLine($"{indent}scenecontrol({scc.Timing},{scc.ScenecontrolTypeName}{parameterString});");
+                    chart.AppendLfLine($"{indent}scenecontrol({scc.Timing},{scc.ScenecontrolTypeName}{parameterString});");
                 }
 
                 break;
@@ -172,6 +188,6 @@ public class ArcCreateChartSerializer(
 
     private void SerializeTimingGroupEnd()
     {
-        _chart.AppendLfLine("};");
+        chart.AppendLfLine("};");
     }
 }

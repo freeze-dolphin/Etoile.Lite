@@ -8,16 +8,16 @@ public class ScenecontrolEnvironment(ScenecontrolService scenecontrolService)
 {
     private readonly Dictionary<string, IScenecontrolHandler> scenecontrolTypes = new();
 
-    public Result<(Exception, string)> Rebuild(IEnumerable<RawScenecontrol> events)
+    public Result<(Exception, RawScenecontrol?)> Rebuild(IEnumerable<RawScenecontrol> events)
     {
         Clean();
         AddBuiltInTypes();
         return ExecuteEvents(events);
     }
 
-    private Result<(Exception, string)> ExecuteEvents(IEnumerable<RawScenecontrol> events)
+    private Result<(Exception, RawScenecontrol?)> ExecuteEvents(IEnumerable<RawScenecontrol> events)
     {
-        string lastTypename = "";
+        RawScenecontrol? lastEv = null;
         try
         {
             foreach (var ev in events)
@@ -27,16 +27,16 @@ public class ScenecontrolEnvironment(ScenecontrolService scenecontrolService)
                     continue;
                 }
 
-                lastTypename = ev.ScenecontrolTypeName;
+                lastEv = ev;
                 scenecontrolTypes[ev.ScenecontrolTypeName].ExecuteCommand(ev);
             }
 
-            return Result<(Exception, string)>.Ok();
+            return Result<(Exception, RawScenecontrol?)>.Ok();
         }
         catch (Exception e)
         {
             Clean();
-            return (e, lastTypename);
+            return (e, lastEv);
         }
     }
 

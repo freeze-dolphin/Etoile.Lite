@@ -12,9 +12,16 @@ public static class MoonadExtensions
         where T : notnull
         where TE : notnull
     {
-        value = result.ResultValue;
-        error = result.ErrorValue;
+        if (result.IsError)
+        {
+            value = default!;
+            error = result.ErrorValue;
+            return false;
+        }
 
-        return !result.IsError;
+        value = result.ResultValue;
+        error = default!;
+
+        return true;
     }
 }

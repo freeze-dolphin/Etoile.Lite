@@ -66,7 +66,8 @@ public partial class ArcaeaChartVisitor : ArcaeaAffChartBaseVisitor<object>
             Timing = tick,
             Divisor = divisor,
             Bpm = bpm,
-            TimingGroup = CurrentTimingGroup
+            TimingGroup = CurrentTimingGroup,
+            LineNumber = context.Start.Line,
         });
 
         return null;
@@ -83,6 +84,7 @@ public partial class ArcaeaChartVisitor : ArcaeaAffChartBaseVisitor<object>
             Timing = tick,
             Lane = lane,
             TimingGroup = CurrentTimingGroup,
+            LineNumber = context.Start.Line,
         });
 
         return null;
@@ -101,6 +103,7 @@ public partial class ArcaeaChartVisitor : ArcaeaAffChartBaseVisitor<object>
             EndTiming = endTick,
             Lane = lane,
             TimingGroup = CurrentTimingGroup,
+            LineNumber = context.Start.Line,
         });
 
         return null;
@@ -172,11 +175,13 @@ public partial class ArcaeaChartVisitor : ArcaeaAffChartBaseVisitor<object>
                         Type = RawEventType.ArcTap,
                         Timing = tick,
                         TimingGroup = CurrentTimingGroup,
-                        Width = width
+                        Width = width,
+                        LineNumber = context.Start.Line,
                     }
                 ],
                 Sfx = hitSound,
-                TimingGroup = CurrentTimingGroup
+                TimingGroup = CurrentTimingGroup,
+                LineNumber = context.Start.Line,
             };
         }
         else
@@ -198,7 +203,8 @@ public partial class ArcaeaChartVisitor : ArcaeaAffChartBaseVisitor<object>
                 ArcTaps = ArcTaps.ToList(),
                 Sfx = hitSound,
                 TimingGroup = CurrentTimingGroup,
-                ArcResolutionMultiplier = arcRes
+                ArcResolutionMultiplier = arcRes,
+                LineNumber = context.Start.Line,
             };
         }
 
@@ -216,7 +222,8 @@ public partial class ArcaeaChartVisitor : ArcaeaAffChartBaseVisitor<object>
             Type = RawEventType.ArcTap,
             Timing = tick,
             TimingGroup = CurrentTimingGroup,
-            Width = 1
+            Width = 1,
+            LineNumber = context.Start.Line,
         });
 
         return null;
@@ -240,9 +247,14 @@ public partial class ArcaeaChartVisitor : ArcaeaAffChartBaseVisitor<object>
             TimingGroup = CurrentTimingGroup,
             Timing = tick,
             Duration = duration,
-            Move = new Vector3((float)mx, (float)my, (float)mz),
-            Rotate = new Vector3((float)rx, (float)ry, (float)rz),
-            CameraType = type
+            Move = new Vector3((float)mx,
+                               (float)my,
+                               (float)mz),
+            Rotate = new Vector3((float)rx,
+                                 (float)ry,
+                                 (float)rz),
+            CameraType = type,
+            LineNumber = context.Start.Line,
         });
 
         return null;
@@ -269,9 +281,14 @@ public partial class ArcaeaChartVisitor : ArcaeaAffChartBaseVisitor<object>
                     {
                         Type = RawEventType.Scenecontrol,
                         Timing = tick,
-                        Arguments = [1000f, 0f],
+                        Arguments =
+                        [
+                            1000f,
+                            0f
+                        ],
                         ScenecontrolTypeName = "trackdisplay",
-                        TimingGroup = CurrentTimingGroup
+                        TimingGroup = CurrentTimingGroup,
+                        LineNumber = context.Start.Line,
                     };
                     break;
                 // https://github.com/freeze-dolphin/aff-compose/blob/17d0948c3f3726336661df4b68b0e5e2a86e3ef6/src/commonMain/kotlin/com/tairitsu/compose/filter/ShimFilter.kt#L30
@@ -280,9 +297,14 @@ public partial class ArcaeaChartVisitor : ArcaeaAffChartBaseVisitor<object>
                     {
                         Type = RawEventType.Scenecontrol,
                         Timing = tick,
-                        Arguments = [1000f, 255f],
+                        Arguments =
+                        [
+                            1000f,
+                            255f
+                        ],
                         ScenecontrolTypeName = "trackdisplay",
-                        TimingGroup = CurrentTimingGroup
+                        TimingGroup = CurrentTimingGroup,
+                        LineNumber = context.Start.Line,
                     };
                     break;
                 case "hidegroup":
@@ -290,9 +312,14 @@ public partial class ArcaeaChartVisitor : ArcaeaAffChartBaseVisitor<object>
                     {
                         Type = RawEventType.Scenecontrol,
                         Timing = tick,
-                        Arguments = [0f, 1f],
+                        Arguments =
+                        [
+                            0f,
+                            1f
+                        ],
                         ScenecontrolTypeName = "hidegroup",
-                        TimingGroup = CurrentTimingGroup
+                        TimingGroup = CurrentTimingGroup,
+                        LineNumber = context.Start.Line,
                     };
                     break;
                 default:
@@ -300,9 +327,12 @@ public partial class ArcaeaChartVisitor : ArcaeaAffChartBaseVisitor<object>
                     {
                         Type = RawEventType.Scenecontrol,
                         Timing = tick,
-                        Arguments = [],
+                        Arguments =
+                        [
+                        ],
                         ScenecontrolTypeName = type,
-                        TimingGroup = CurrentTimingGroup
+                        TimingGroup = CurrentTimingGroup,
+                        LineNumber = context.Start.Line,
                     };
                     break;
             }
@@ -328,10 +358,13 @@ public partial class ArcaeaChartVisitor : ArcaeaAffChartBaseVisitor<object>
                         Arguments =
                         [
                             (float)duration,
-                            Math.Clamp(alpha, 0, 255)
+                            Math.Clamp(alpha,
+                                       0,
+                                       255)
                         ],
                         ScenecontrolTypeName = "trackdisplay",
-                        TimingGroup = CurrentTimingGroup
+                        TimingGroup = CurrentTimingGroup,
+                        LineNumber = context.Start.Line,
                     };
                     break;
                 default:
@@ -339,9 +372,14 @@ public partial class ArcaeaChartVisitor : ArcaeaAffChartBaseVisitor<object>
                     {
                         Type = RawEventType.Scenecontrol,
                         Timing = tick,
-                        Arguments = [(float)param1.ParseFloat(), param2.ParseInt()],
+                        Arguments =
+                        [
+                            (float)param1.ParseFloat(),
+                            param2.ParseInt()
+                        ],
                         ScenecontrolTypeName = type,
-                        TimingGroup = CurrentTimingGroup
+                        TimingGroup = CurrentTimingGroup,
+                        LineNumber = context.Start.Line,
                     };
                     break;
             }

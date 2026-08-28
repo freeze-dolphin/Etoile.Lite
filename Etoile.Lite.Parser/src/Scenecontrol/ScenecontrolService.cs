@@ -4,7 +4,6 @@ using System.Text.Json.Serialization;
 using Etoile.Lite.Parser.Scenecontrol.Controllers;
 using Etoile.Lite.Parser.Scenecontrol.IO;
 using Etoile.Lite.Parser.Utility;
-using Newtonsoft.Json;
 
 namespace Etoile.Lite.Parser.Scenecontrol;
 
@@ -32,12 +31,20 @@ public class ScenecontrolService
         referencedControllers.Clear();
     }
 
-    public string Export()
+    public void AddReferencedController(ISceneController c)
+    {
+        if (!referencedControllers.Contains(c))
+        {
+            referencedControllers.Add(c);
+        }
+    }
+
+    public string? Export()
     {
         var serialization = new ScenecontrolSerialization();
         if (referencedControllers.Count == 0)
         {
-            return "[]";
+            return null;
         }
 
         foreach (var c in referencedControllers)
@@ -45,14 +52,47 @@ public class ScenecontrolService
             serialization.AddUnitAndGetId(c);
         }
 
-        return JsonConvert.SerializeObject(serialization.Result);
+        return JsonSerializer.Serialize(serialization.Result, Options);
     }
 
-    public void AddReferencedController(ISceneController c)
+    private static readonly JsonSerializerOptions Options = new()
     {
-        if (!referencedControllers.Contains(c))
+        DefaultIgnoreCondition = JsonIgnoreCondition.Never,
+        IncludeFields = true,
+        Converters = { new DoubleConverter(), new FloatConverter() }
+    };
+
+    private sealed class DoubleConverter : JsonConverter<double>
+    {
+        public override double Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            referencedControllers.Add(c);
+            throw new NotImplementedException();
+        }
+
+        public override void Write(
+            Utf8JsonWriter        writer,
+            double                value,
+            JsonSerializerOptions options)
+        {
+            if (value.Approximately(0)) value = Math.Abs(value);
+            writer.WriteRawValue(value.ToString("0.0###", CultureInfo.InvariantCulture));
+        }
+    }
+
+    private sealed class FloatConverter : JsonConverter<float>
+    {
+        public override float Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Write(
+            Utf8JsonWriter        writer,
+            float                 value,
+            JsonSerializerOptions options)
+        {
+            if (value.Approximately(0)) value = Math.Abs(value);
+            writer.WriteRawValue(value.ToString("0.0###", CultureInfo.InvariantCulture));
         }
     }
 }

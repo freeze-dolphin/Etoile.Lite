@@ -11,7 +11,6 @@
       <PackageReference Include="Antlr4.Runtime.Standard" Version="4.13.1" />
       <PackageReference Include="Moonad" Version="5.5.1" />
       <PackageReference Include="Moonad.Next" Version="1.0.0" />
-      <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     </ItemGroup>
 
 </Project>

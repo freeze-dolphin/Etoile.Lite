@@ -77,7 +77,7 @@ eventHold : 'hold' LParen (Int Comma) (Int Comma) (Int | Float) RParen;
 eventArc : 'arc' LParen (Int Comma) (Int Comma) (Float Comma) (Float Comma) (Word Comma) (Float Comma) (Float Comma) (Int Comma) (Word Comma) (Word) (Comma Float)? RParen subEvents?;
 eventArcTap : 'arctap' LParen (Int) RParen;
 eventCamera : 'camera' LParen (Int Comma) (Float Comma) (Float Comma) (Float Comma) (Float Comma) (Float Comma) (Float Comma) (Word Comma) (Int) RParen;
-eventScenecontrol : 'scenecontrol' LParen (Int Comma) (Word Comma) ((Float Comma) Int)? RParen;
+eventScenecontrol : 'scenecontrol' LParen (Int Comma) (Word) (Comma (Float Comma) Int)? RParen;
 eventTimingGroup : 'timinggroup' LParen (Word)? RParen segment;
 
 event
