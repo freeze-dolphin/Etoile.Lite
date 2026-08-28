@@ -95,10 +95,13 @@ internal static partial class Program
         [Description("Path to the result files parent dir")]
         public string Output { get; init; } = "./results";
 
+        /*
+         * parallelism is not available yet
         [CommandOption("-j|--jobs|--parallel")]
         [DefaultValue(0)]
         [Description("Number of parallelism")]
         public int ParallelJobs { get; init; }
+        */
 
         public override ValidationResult Validate()
         {
@@ -344,7 +347,7 @@ internal static partial class Program
                                             var error = errorListener.Errors[0];
 
                                             DiagnosticPrinter.PrintContext(
-                                                chartEntry.ChartPath,
+                                                Path.Combine(songDir, chartEntry.ChartPath),
                                                 error.LineNumber,
                                                 message: error.Message,
                                                 reason: "Unable to parse the chart."
@@ -373,7 +376,7 @@ internal static partial class Program
                                             }
 
                                             DiagnosticPrinter.PrintContext(
-                                                chartEntry.ChartPath,
+                                                Path.Combine(songDir, chartEntry.ChartPath),
                                                 ev.LineNumber,
                                                 message: ex.Message,
                                                 reason: "Unable to serialize the scene."
