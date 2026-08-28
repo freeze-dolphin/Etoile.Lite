@@ -45,7 +45,7 @@ public static class ArcCreatePackHelper
             0 => "#0a82beff", // "#3A6B78FF",
             1 => "#648c3cff", // "#566947FF",
             // 2 => default 
-            3 => "#822328ff", //"#7C1C30FF",
+            3 => "#822328ff", // "#7C1C30FF",
             4 => "#5d4e76ff", // "#433455FF",
             _ => "#50194bff"  // "#482B54FF",
         };

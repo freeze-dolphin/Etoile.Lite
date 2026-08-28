@@ -17,8 +17,8 @@ namespace Etoile.Lite;
 
 internal static partial class Program
 {
-    private static readonly HashSet<string> ActivePartialFiles     = new();
-    private static readonly object          ActivePartialFilesLock = new();
+    private static readonly HashSet<string> ActivePartialFiles     = [];
+    private static readonly Lock            ActivePartialFilesLock = new();
 
     static Program()
     {
