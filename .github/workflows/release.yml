@@ -45,8 +45,11 @@ jobs:
         with:
           dotnet-version: "10.0.x"
 
-      - name: Publish (${{ matrix.rid }})
+      - name: Publish with runtime (${{ matrix.rid }})
         run: dotnet publish Etoile.Lite/Etoile.Lite.csproj -c Release -r ${{ matrix.rid }} --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=None -p:DebugSymbols=false -o publish/${{ matrix.rid }}
+
+      - name: Publish without runtime (${{ matrix.rid }})
+        run: dotnet publish Etoile.Lite/Etoile.Lite.csproj -c Release -r ${{ matrix.rid }} --self-contained false -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=None -p:DebugSymbols=false -o publish/${{ matrix.rid }}-noruntime
 
       - name: Package
         shell: pwsh
@@ -54,15 +57,21 @@ jobs:
           $name = "Etoile.Lite-${{ github.ref_name }}-${{ matrix.rid }}"
           if ("${{ matrix.archive }}" -eq "zip") {
             Compress-Archive -Path "publish/${{ matrix.rid }}/*" -DestinationPath "$name.zip"
+            Compress-Archive -Path "publish/${{ matrix.rid }}-noruntime/*" -DestinationPath "$name-noruntime.zip"
           } else {
             tar -czf "$name.tar.gz" -C "publish/${{ matrix.rid }}" .
+            tar -czf "$name-noruntime.tar.gz" -C "publish/${{ matrix.rid }}-noruntime" .
           }
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: package-${{ matrix.rid }}
-          path: Etoile.Lite-${{ github.ref_name }}-${{ matrix.rid }}.*
+          path: |
+            Etoile.Lite-${{ github.ref_name }}-${{ matrix.rid }}.zip
+            Etoile.Lite-${{ github.ref_name }}-${{ matrix.rid }}-noruntime.zip
+            Etoile.Lite-${{ github.ref_name }}-${{ matrix.rid }}.tar.gz
+            Etoile.Lite-${{ github.ref_name }}-${{ matrix.rid }}-noruntime.tar.gz
           if-no-files-found: error
 
   release:
