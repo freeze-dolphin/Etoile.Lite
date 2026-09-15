@@ -4,7 +4,7 @@ using Etoile.Lite.Parser.Types;
 
 namespace Etoile.Lite.Parser.Scenecontrol.Handler;
 
-public class EnwidenCameraType(ScenecontrolService scenecontrolService) : IScenecontrolHandler
+public class EnwidenCameraType(ScenecontrolService scenecontrolService) : IScenecontrolCommandHandler
 {
     private bool       setup;
     private KeyChannel enwidenCameraFactor;

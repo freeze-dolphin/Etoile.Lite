@@ -2,7 +2,7 @@
 
 namespace Etoile.Lite.Parser.Scenecontrol.Handler;
 
-public interface IScenecontrolHandler
+public interface IScenecontrolCommandHandler
 {
     string Typename { get; }
     void ExecuteCommand(RawScenecontrol ev);

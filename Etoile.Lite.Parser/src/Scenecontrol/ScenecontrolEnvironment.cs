@@ -6,13 +6,16 @@ namespace Etoile.Lite.Parser.Scenecontrol;
 
 public class ScenecontrolEnvironment(ScenecontrolService scenecontrolService)
 {
-    private readonly Dictionary<string, IScenecontrolHandler> scenecontrolTypes = new();
+    private readonly Dictionary<string, IScenecontrolCommandHandler> scenecontrolCommandTypes = new();
 
-    public Result<(Exception, RawScenecontrol?)> Rebuild(IEnumerable<RawScenecontrol> events)
+    public Result<(Exception, RawScenecontrol?)> Rebuild(List<(RawTimingGroup, IEnumerable<RawEvent>)> groups)
     {
+        var sc = groups.SelectMany(x => x.Item2).OfType<RawScenecontrol>();
+
         Clean();
-        AddBuiltInTypes();
-        return ExecuteEvents(events);
+        AddBuiltInCommandTypes();
+        AddBuiltInPassiveTypes(groups);
+        return ExecuteEvents(sc);
     }
 
     private Result<(Exception, RawScenecontrol?)> ExecuteEvents(IEnumerable<RawScenecontrol> events)
@@ -22,13 +25,13 @@ public class ScenecontrolEnvironment(ScenecontrolService scenecontrolService)
         {
             foreach (var ev in events)
             {
-                if (!scenecontrolTypes.ContainsKey(ev.ScenecontrolTypeName))
+                if (!scenecontrolCommandTypes.ContainsKey(ev.ScenecontrolTypeName))
                 {
                     continue;
                 }
 
                 lastEv = ev;
-                scenecontrolTypes[ev.ScenecontrolTypeName].ExecuteCommand(ev);
+                scenecontrolCommandTypes[ev.ScenecontrolTypeName].ExecuteCommand(ev);
             }
 
             return Result<(Exception, RawScenecontrol?)>.Ok();
@@ -42,21 +45,30 @@ public class ScenecontrolEnvironment(ScenecontrolService scenecontrolService)
 
     private void Clean()
     {
-        scenecontrolTypes.Clear();
+        scenecontrolCommandTypes.Clear();
         scenecontrolService.Clean();
     }
 
-    private void AddBuiltInTypes()
+    private void AddBuiltInCommandTypes()
     {
-        AddType(new TrackDisplayType(scenecontrolService));
-        AddType(new HideGroupType(scenecontrolService));
-        AddType(new GroupAlphaType(scenecontrolService));
-        AddType(new EnwidenLanesType(scenecontrolService));
-        AddType(new EnwidenCameraType(scenecontrolService));
+        AddCommandType(new TrackDisplayType(scenecontrolService));
+        AddCommandType(new HideGroupType(scenecontrolService));
+        AddCommandType(new GroupAlphaType(scenecontrolService));
+        AddCommandType(new EnwidenLanesType(scenecontrolService));
+        AddCommandType(new EnwidenCameraType(scenecontrolService));
     }
 
-    private void AddType(IScenecontrolHandler type)
+    private void AddBuiltInPassiveTypes(List<(RawTimingGroup, IEnumerable<RawEvent>)> groups)
     {
-        scenecontrolTypes.Add(type.Typename, type);
+    }
+
+    private void AddCommandType(IScenecontrolCommandHandler type)
+    {
+        scenecontrolCommandTypes.Add(type.Typename, type);
+    }
+
+    private void AddPassiveType(IScenecontrolPassiveHandler type, List<(RawTimingGroup, IEnumerable<RawEvent>)> groups)
+    {
+        type.ExecuteCommand(groups);
     }
 }

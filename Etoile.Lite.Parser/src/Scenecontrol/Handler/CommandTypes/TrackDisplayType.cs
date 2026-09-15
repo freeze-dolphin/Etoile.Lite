@@ -5,7 +5,7 @@ using Etoile.Lite.Parser.Utility;
 
 namespace Etoile.Lite.Parser.Scenecontrol.Handler;
 
-public class TrackDisplayType(ScenecontrolService scenecontrolService) : IScenecontrolHandler
+public class TrackDisplayType(ScenecontrolService scenecontrolService) : IScenecontrolCommandHandler
 {
     private bool       setup;
     private KeyChannel trackAlphaFactor;

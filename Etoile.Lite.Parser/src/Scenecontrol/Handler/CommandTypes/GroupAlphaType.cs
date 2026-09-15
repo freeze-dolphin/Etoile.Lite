@@ -5,7 +5,7 @@ using Etoile.Lite.Parser.Types;
 
 namespace Etoile.Lite.Parser.Scenecontrol.Handler;
 
-public class GroupAlphaType(ScenecontrolService scenecontrolService) : IScenecontrolHandler
+public class GroupAlphaType(ScenecontrolService scenecontrolService) : IScenecontrolCommandHandler
 {
     public string Typename { get; } = "groupalpha";
 

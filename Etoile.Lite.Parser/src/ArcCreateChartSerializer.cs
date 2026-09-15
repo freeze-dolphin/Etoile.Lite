@@ -21,7 +21,7 @@ public class ArcCreateChartSerializer(
 
     public Result<(Exception, RawScenecontrol?)> Serialize()
     {
-        IEnumerable<(RawTimingGroup, IEnumerable<RawEvent>)> groups = timingGroups.Select((rawTg, tg) => (rawTg, events.Where(e => e.TimingGroup == tg)));
+        List<(RawTimingGroup, IEnumerable<RawEvent>)> groups = timingGroups.Select((rawTg, tg) => (rawTg, events.Where(e => e.TimingGroup == tg))).ToList();
 
         bool baseGroup = true;
         foreach (var (properties, evts) in groups)
@@ -50,7 +50,7 @@ public class ArcCreateChartSerializer(
 
         var sc = new ScenecontrolService();
         var env = new ScenecontrolEnvironment(sc);
-        var scBuildResult = env.Rebuild(events.OfType<RawScenecontrol>());
+        var scBuildResult = env.Rebuild(groups);
         if (scBuildResult.IsOk)
         {
             sc.Export()?.Next(scenecontrol.AppendLfLine);

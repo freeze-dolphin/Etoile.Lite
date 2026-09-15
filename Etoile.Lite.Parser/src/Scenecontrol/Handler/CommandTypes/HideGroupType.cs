@@ -2,11 +2,10 @@ using Etoile.Lite.Parser.Scenecontrol.Channels;
 using Etoile.Lite.Parser.Scenecontrol.Channels.EffectChannels;
 using Etoile.Lite.Parser.Scenecontrol.Controllers;
 using Etoile.Lite.Parser.Types;
-using Moonad;
 
 namespace Etoile.Lite.Parser.Scenecontrol.Handler;
 
-public class HideGroupType(ScenecontrolService scenecontrolService) : IScenecontrolHandler
+public class HideGroupType(ScenecontrolService scenecontrolService) : IScenecontrolCommandHandler
 {
     public string Typename => "hidegroup";
 

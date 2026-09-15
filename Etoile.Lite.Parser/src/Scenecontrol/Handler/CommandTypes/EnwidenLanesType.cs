@@ -5,7 +5,7 @@ using Etoile.Lite.Parser.Types;
 
 namespace Etoile.Lite.Parser.Scenecontrol.Handler;
 
-public class EnwidenLanesType(ScenecontrolService scenecontrolService) : IScenecontrolHandler
+public class EnwidenLanesType(ScenecontrolService scenecontrolService) : IScenecontrolCommandHandler
 {
     private bool       setup;
     private KeyChannel enwidenLaneFactor;

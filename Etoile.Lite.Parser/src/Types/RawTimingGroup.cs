@@ -1,3 +1,4 @@
+using System.Drawing;
 
 namespace Etoile.Lite.Parser.Types;
 
@@ -7,6 +8,7 @@ public class RawTimingGroup
     public bool   FadingHolds { get; set; } = false;
     public double AngleX      { get; set; } = 0;
     public double AngleY      { get; set; } = 0;
+    public Color? TraceColor  { get; set; } = null; // not implemented yet
 
     public override string ToString()
     {
