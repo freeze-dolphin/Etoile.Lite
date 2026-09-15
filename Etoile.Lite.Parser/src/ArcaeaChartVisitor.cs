@@ -132,6 +132,12 @@ public partial class ArcaeaChartVisitor : ArcaeaAffChartBaseVisitor<object>
         var hitSound = context.Word(1).GetText();
         var arcType = context.Word(2).GetText();
 
+        if (arcType is "designant")
+        {
+            // drop the designant arc notes
+            return null;
+        }
+
         double arcRes = 1.0;
         if (context.Float(4) != null)
         {
