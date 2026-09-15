@@ -6,12 +6,27 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+
+        <!-- NuGet / .NET tool packaging -->
+        <PackAsTool>true</PackAsTool>
+        <ToolCommandName>Etoile.Lite</ToolCommandName>
+        <Authors>freeze-dolphin</Authors>
+        <Description>A lightweight utility that converts Arcaea chart files into ArcCreate-compatible packages</Description>
+        <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/freeze-dolphin/Etoile.Lite</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/freeze-dolphin/Etoile.Lite.git</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <PackageTags>arcaea;arccreate;converter;rhythm-game;dotnet-tool</PackageTags>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
     <ItemGroup>
-      <Content Include="..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
+        <None Include="..\README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\.dockerignore" Link=".dockerignore" Pack="false" />
     </ItemGroup>
 
     <ItemGroup>

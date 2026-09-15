@@ -5,7 +5,22 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <DefineConstants>ENABLE_GENERATOR_INFO</DefineConstants>
+
+        <!-- NuGet packaging -->
+        <Authors>freeze-dolphin</Authors>
+        <Description>Parser and serializer for Arcaea .aff charts and ArcCreate-compatible scenecontrol data</Description>
+        <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/freeze-dolphin/Etoile.Lite</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/freeze-dolphin/Etoile.Lite.git</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <PackageTags>arcaea;aff;chart;arccreate;parser;serializer;rhythm-game;scenecontrol</PackageTags>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="..\README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="Antlr4.Runtime.Standard" Version="4.13.1" />
