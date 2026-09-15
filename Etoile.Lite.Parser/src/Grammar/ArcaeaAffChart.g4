@@ -67,7 +67,7 @@ fragment BSLASH     : '\\';
 // $antlr-format allowShortRulesOnASingleLine false, allowShortBlocksOnASingleLine true, alignSemicolons hanging, alignColons hanging
 
 chart
-    : header+ '-' body EOF
+    : (header+)? '-' body EOF
     | body EOF
     ;
 
