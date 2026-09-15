@@ -396,12 +396,34 @@ public partial class ArcaeaChartVisitor : ArcaeaAffChartBaseVisitor<object>
         return null;
     }
 
+    private static readonly string[] TimingGroupKeywords =
+    [
+        "angley",
+        "anglex",
+        "noinput",
+        "fadingholds",
+        "tracecol"
+    ];
+
     public override object VisitEventTimingGroup(ArcaeaAffChartParser.EventTimingGroupContext context)
     {
         TimingGroups.Add(ParseTimingGroupProperties());
         VisitSegment(context.segment());
 
         return null;
+
+        static (string Name, string Value)? ExtractTimingGroupProperty(string propRaw)
+        {
+            foreach (var kw in TimingGroupKeywords)
+            {
+                if (propRaw.StartsWith(kw))
+                {
+                    return (kw, propRaw.Substring(kw.Length));
+                }
+            }
+
+            return null;
+        }
 
         RawTimingGroup ParseTimingGroupProperties()
         {
@@ -411,11 +433,11 @@ public partial class ArcaeaChartVisitor : ArcaeaAffChartBaseVisitor<object>
             {
                 foreach (var propRaw in context.Word().GetText().Split("_"))
                 {
-                    var match = TimingGroupPropertyRegex().Match(propRaw);
-                    if (!match.Success) continue;
+                    var match = ExtractTimingGroupProperty(propRaw);
+                    if (match is null) continue;
 
-                    string name = match.Groups[1].Value;
-                    string? value = match.Groups[2].Success ? match.Groups[2].Value : null;
+                    string name = match.Value.Name;
+                    string value = match.Value.Value;
 
                     propDict.Add(name, value);
                 }
@@ -423,13 +445,13 @@ public partial class ArcaeaChartVisitor : ArcaeaAffChartBaseVisitor<object>
 
             var prop = new RawTimingGroup();
 
-            foreach (var (type, value) in propDict)
+            foreach (var (name, value) in propDict)
             {
-                if (value != null)
+                if (!string.IsNullOrWhiteSpace(value))
                 {
                     bool valid;
                     double val;
-                    switch (type.ToLower())
+                    switch (name.ToLower())
                     {
                         // https://github.com/freeze-dolphin/aff-compose/blob/17d0948c3f3726336661df4b68b0e5e2a86e3ef6/src/commonMain/kotlin/com/tairitsu/compose/filter/ShimFilter.kt#L41-L45
                         case "anglex":
@@ -441,17 +463,15 @@ public partial class ArcaeaChartVisitor : ArcaeaAffChartBaseVisitor<object>
                             prop.AngleY = valid ? val / -10 : 0;
                             break;
 
-                        // don't throw exceptions to allow user add other identifiers for tg (but we don't parse them)
-                        /*
-                        default:
-                            throw new ChartReaderException(raw, RawEventType.TimingGroup, evt,
-                                ChartError.Kind.TimingGroupPropertiesInvalid);
-                        */
+                        case "tracecol":
+                            valid = $"#{value}".TryParseColor(out var color);
+                            prop.TraceColor = valid ? color : null;
+                            break;
                     }
                 }
                 else
                 {
-                    switch (type.ToLower())
+                    switch (name.ToLower())
                     {
                         case "noinput":
                             prop.NoInput = true;
@@ -459,13 +479,6 @@ public partial class ArcaeaChartVisitor : ArcaeaAffChartBaseVisitor<object>
                         case "fadingholds":
                             prop.FadingHolds = true;
                             break;
-
-                        // don't throw exceptions to allow user add other identifiers for tg (but we don't parse them)
-                        /*
-                        default:
-                            throw new ChartReaderException(raw, RawEventType.TimingGroup, evt,
-                                ChartError.Kind.TimingGroupPropertiesInvalid);
-                        */
                     }
                 }
             }
@@ -512,6 +525,7 @@ public partial class ArcaeaChartVisitor : ArcaeaAffChartBaseVisitor<object>
     /// <summary>
     /// https://regex101.com/r/wTAqy8/2
     /// </summary>
+    [Obsolete("Keyword detection is used instead.")]
     [GeneratedRegex(@"([a-zA-Z]+)(-?(0|([1-9][0-9]*))(\.\d+)?)?", RegexOptions.Compiled)]
     private static partial Regex TimingGroupPropertyRegex();
 }
