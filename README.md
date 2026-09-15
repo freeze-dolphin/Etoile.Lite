@@ -1,6 +1,15 @@
 # Etoile.Lite
 
+<a href="https://www.nuget.org/packages/Etoile.Lite/"><img src="https://img.shields.io/nuget/v/Etoile.Lite?logo=nuget&label=Etoile.Lite&color=%23004880"/></a>
+<a href="https://www.nuget.org/packages/Etoile.Lite.Parser/"><img src="https://img.shields.io/nuget/v/Etoile.Lite.Parser?logo=nuget&label=Etoile.Lite.Parser&color=%23004880"/></a>
+
 A lightweight utility that converts Arcaea chart files into [ArcCreate](https://github.com/Arcthesia/ArcCreate)-compatible packages
+
+Install to your system with the following command:
+
+```shell
+dotnet tool install --global Etoile.Lite
+```
 
 ## Features
 
