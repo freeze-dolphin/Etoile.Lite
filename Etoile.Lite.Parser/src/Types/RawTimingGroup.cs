@@ -4,11 +4,12 @@ namespace Etoile.Lite.Parser.Types;
 
 public class RawTimingGroup
 {
-    public bool   NoInput     { get; set; } = false;
-    public bool   FadingHolds { get; set; } = false;
-    public double AngleX      { get; set; } = 0;
-    public double AngleY      { get; set; } = 0;
-    public Color? TraceColor  { get; set; } = null; // not implemented yet
+    public bool   NoInput      { get; set; } = false;
+    public bool   NoConnection { get; set; } = false;
+    public bool   FadingHolds  { get; set; } = false;
+    public double AngleX       { get; set; } = 0;
+    public double AngleY       { get; set; } = 0;
+    public Color? TraceColor   { get; set; } = null; // not implemented yet
 
     public override string ToString()
     {
@@ -23,6 +24,11 @@ public class RawTimingGroup
         if (NoInput)
         {
             opts.Add("noinput");
+        }
+
+        if (NoConnection)
+        {
+            opts.Add("noconnection");
         }
 
         if (FadingHolds)

@@ -475,6 +475,7 @@ public partial class ArcaeaChartVisitor : ArcaeaAffChartBaseVisitor<object>
                     {
                         case "noinput":
                             prop.NoInput = true;
+                            prop.NoConnection = true;
                             break;
                         case "fadingholds":
                             prop.FadingHolds = true;
