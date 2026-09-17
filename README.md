@@ -1,7 +1,4 @@
-# Etoile.Lite
-
-<a href="https://www.nuget.org/packages/Etoile.Lite/"><img src="https://img.shields.io/nuget/v/Etoile.Lite?logo=nuget&label=Etoile.Lite&color=%23004880"/></a>
-<a href="https://www.nuget.org/packages/Etoile.Lite.Parser/"><img src="https://img.shields.io/nuget/v/Etoile.Lite.Parser?logo=nuget&label=Etoile.Lite.Parser&color=%23004880"/></a>
+# Etoile.Lite [![Etoile.Lite nuget](https://img.shields.io/nuget/v/Etoile.Lite?logo=nuget&label=Etoile.Lite&color=%23004880)](https://www.nuget.org/packages/Etoile.Lite/) [![Etoile.Lite.Parser nuget](https://img.shields.io/nuget/v/Etoile.Lite.Parser?logo=nuget&label=Etoile.Lite.Parser&color=%23004880)](https://www.nuget.org/packages/Etoile.Lite.Parser/)
 
 A lightweight utility that converts Arcaea chart files into [ArcCreate](https://github.com/Arcthesia/ArcCreate)-compatible packages
 
