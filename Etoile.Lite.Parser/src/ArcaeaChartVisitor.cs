@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Numerics;
 using System.Text.RegularExpressions;
 using Antlr4.Runtime.Tree;
@@ -10,7 +11,8 @@ namespace Etoile.Lite.Parser;
 
 public partial class ArcaeaChartVisitor : ArcaeaAffChartBaseVisitor<object>
 {
-    private int CurrentTimingGroup => TimingGroups.Count - 1;
+    private readonly Stack<int> _timingGroupStack = new([0]);
+    private          int        CurrentTimingGroup => _timingGroupStack.Peek();
 
     private int    _audioOffset              = 0;
     private double _timingPointDensityFactor = 1;
@@ -408,7 +410,16 @@ public partial class ArcaeaChartVisitor : ArcaeaAffChartBaseVisitor<object>
     public override object VisitEventTimingGroup(ArcaeaAffChartParser.EventTimingGroupContext context)
     {
         TimingGroups.Add(ParseTimingGroupProperties());
-        VisitSegment(context.segment());
+        _timingGroupStack.Push(TimingGroups.Count - 1);
+
+        try
+        {
+            VisitSegment(context.segment());
+        }
+        finally
+        {
+            _timingGroupStack.Pop();
+        }
 
         return null;
 
