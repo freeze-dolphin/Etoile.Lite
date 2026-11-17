@@ -115,9 +115,11 @@ public class ArcCreateChartSerializer(
 
             case RawEventType.Arc:
                 RawArc arc = affEvent as RawArc;
+                string arcBasicData = arc.Timing <= arc.EndTiming
+                    ? $"{arc.Timing},{arc.EndTiming},{arc.XStart:f2},{arc.XEnd:f2},{arc.LineType},{arc.YStart:f2},{arc.YEnd:f2}"
+                    : $"{arc.EndTiming},{arc.Timing},{arc.XEnd:f2},{arc.XStart:f2},{arc.LineType},{arc.YEnd:f2},{arc.YStart:f2}";
                 string arcStr =
-                    $"{indent}arc({arc.Timing},{arc.EndTiming},{arc.XStart:f2},{arc.XEnd:f2}," +
-                    $"{arc.LineType},{arc.YStart:f2},{arc.YEnd:f2},"                           +
+                    $"{indent}arc({arcBasicData}," +
                     $"{arc.Color},{arc.Sfx ?? "none"},{(arc.IsTrace ? "true" : "false")}";
                 if (arc.ArcResolutionMultiplier.Approximately(1.0f))
                 {
